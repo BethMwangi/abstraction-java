@@ -44,6 +44,7 @@ System.out.println("Rate of Interest is: "+interest+" %");
 ~~~
 
 <p>Output:</p>
+
 ~~~Java
 run:
 Rate of Interest is: 7 %
@@ -88,3 +89,90 @@ public class MyString {
     public MyString substring (int start, int end) { ... }
 }
 ~~~
+
+<p>These public operations and their specifications are the only information that a client of this data type is allowed to know. Following the test-first programming paradigm, in fact, the first client we should create is a test suite that exercises these operations according to their specs. At the moment, however, writing test cases that use assertEquals directly on MyString objects wouldn’t work, because we don’t have an equality operation defined on these MyStrings. We’ll talk about how to implement equality carefully in the next reading. For now, the only operations we can perform with MyStrings are the ones we’ve defined above: valueOf, length, charAt, and substring. Our tests have to limit themselves to those operations. For example, here’s one test for the valueOf operation:</p>
+
+~~~Java
+MyString s = MyString.valueOf(true);
+assertEquals(4, s.length());
+assertEquals('t', s.charAt(0));
+assertEquals('r', s.charAt(1));
+assertEquals('u', s.charAt(2));
+assertEquals('e', s.charAt(3));
+~~~
+
+<h2>Testing an Abstract Data Type</h2>
+<p>We build a test suite for an abstract data type by creating tests for each of its operations. These tests inevitably interact with each other, since the only way to test creators, producers, and mutators is by calling observers on the objects that result.</p>
+<p>Here’s how we might partition the input spaces of the four operations in our MyString type:</p>
+
+~~~Java
+// testing strategy for each operation of MyString:
+//
+// valueOf():
+//    true, false
+// length():
+//    string len = 0, 1, n
+//    string = produced by valueOf(), produced by substring()
+// charAt():
+//    string len = 1, n
+//    i = 0, middle, len-1
+//    string = produced by valueOf(), produced by substring()
+// substring():
+//    string len = 0, 1, n
+//    start = 0, middle, len
+//    end = 0, middle, len
+//    end-start = 0, n
+//    string = produced by valueOf(), produced by substring()
+~~~
+<p>Then a compact test suite that covers all these partitions might look like:</p>
+
+~~~Java
+@Test public void testValueOfTrue() {
+    MyString s = MyString.valueOf(true);
+    assertEquals(4, s.length());
+    assertEquals('t', s.charAt(0));
+    assertEquals('r', s.charAt(1));
+    assertEquals('u', s.charAt(2));
+    assertEquals('e', s.charAt(3));
+}
+
+@Test public void testValueOfFalse() {
+    MyString s = MyString.valueOf(false);
+    assertEquals(5, s.length());
+    assertEquals('f', s.charAt(0));
+    assertEquals('a', s.charAt(1));
+    assertEquals('l', s.charAt(2));
+    assertEquals('s', s.charAt(3));
+    assertEquals('e', s.charAt(4));
+}
+
+@Test public void testEndSubstring() {
+    MyString s = MyString.valueOf(true).substring(2, 4);
+    assertEquals(2, s.length());
+    assertEquals('u', s.charAt(0));
+    assertEquals('e', s.charAt(1));
+}
+
+@Test public void testMiddleSubstring() {
+    MyString s = MyString.valueOf(false).substring(1, 2);
+    assertEquals(1, s.length());
+    assertEquals('a', s.charAt(0));
+}
+
+@Test public void testSubstringIsWholeString() {
+    MyString s = MyString.valueOf(false).substring(0, 5);
+    assertEquals(5, s.length());
+    assertEquals('f', s.charAt(0));
+    assertEquals('a', s.charAt(1));
+    assertEquals('l', s.charAt(2));
+    assertEquals('s', s.charAt(3));
+    assertEquals('e', s.charAt(4));
+}
+
+@Test public void testSubstringOfEmptySubstring() {
+    MyString s = MyString.valueOf(false).substring(1, 1).substring(0, 0);
+    assertEquals(0, s.length());
+}
+~~~
+
+<p>Notice that each test case typically calls a few operations that make or modify objects of the type (creators, producers, mutators) and some operations that inspect objects of the type (observers). As a result, each test case covers parts of several operations.</p>
