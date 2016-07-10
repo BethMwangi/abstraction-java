@@ -40,6 +40,7 @@ public static void main(String args[]){
 Bank b=new SBI();//if object is PNB, method of PNB will be invoked    
 int interest=b.getRateOfInterest();    
 System.out.println("Rate of Interest is: "+interest+" %");
+
 ~~~
 
 <p>Output:</p>
@@ -51,3 +52,6 @@ BUILD SUCCESSFUL (total time: 0 seconds)
 
 <h1>Abstract Data Types</h1>
 <p>In computer science, an abstract data type (ADT) is a mathematical model for a certain class of data structures that have similar behavior; or for certain data types of one or more programming languages that have similar semantics. An abstract data type is defined indirectly, only by the operations that may be performed on it and by mathematical constraints on the effects (and possibly cost) of those operations.</p>
+
+<h2>Representation Independence</h2>
+<p>Critically, a good abstract data type should be representation independent. This means that the use of an abstract type is independent of its representation (the actual data structure or data fields used to implement it), so that changes in representation have no effect on code outside the abstract type itself. For example, the operations offered by List are independent of whether the list is represented as a linked list or as an array.</p>
