@@ -55,3 +55,36 @@ BUILD SUCCESSFUL (total time: 0 seconds)
 
 <h2>Representation Independence</h2>
 <p>Critically, a good abstract data type should be representation independent. This means that the use of an abstract type is independent of its representation (the actual data structure or data fields used to implement it), so that changes in representation have no effect on code outside the abstract type itself. For example, the operations offered by List are independent of whether the list is represented as a linked list or as an array.</p>
+
+<p>You won’t be able to change the representation of an ADT at all unless its operations are fully specified with preconditions and postconditions, so that clients know what to depend on, and you know what you can safely change.</p>
+
+<h2>Example: Different Representations for Strings</h2>
+<p>Let’s look at a simple abstract data type to see what representation independence means and why it’s useful. The MyString type below has far fewer operations than the real Java String, and their specs are a little different, but it’s still illustrative. Here are the specs for the ADT:</p>
+
+~~~Java
+/** String represents an immutable sequence of characters. */
+public class MyString {
+
+    //////////////////// Example of a creator operation ///////////////
+    /** @param b a boolean value
+      * @return string representation of b, either "true" or "false" */
+    public static MyString valueOf(boolean b) { ... }
+
+    //////////////////// Examples of observer operations ///////////////
+    /** @return number of characters in this string */
+    public int length() { ... }
+
+    /** @param i character position (requires 0 <= i < string length)
+      * @return character at position i
+      */
+    public char charAt(int i) { ... }
+
+    //////////////////// Example of a producer operation ///////////////    
+    /** Get the substring between start (inclusive) and end (exclusive).
+     * @param start starting index
+     * @param end ending index.  Requires 0 <= start <= end <= string length.
+     * @return string consisting of charAt(start)...charAt(end-1)
+     */
+    public MyString substring (int start, int end) { ... }
+}
+~~~
