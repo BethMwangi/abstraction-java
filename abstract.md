@@ -15,7 +15,6 @@
 ~~~
 
 <h2>Example of abstract method</h2>
-<h2>Example of abstract class</h2>
 
 ~~~Java
 abstract void printStatus();//no body and abstract   
